@@ -31,8 +31,7 @@ pipeline {
 					docker { image '$DOCKER_USER/$DOCKER_IMAGE_NAME:latest' }
 				}                         
 				steps {                                 
-					echo 'Testing...'    
-					sh 'npm -v'
+					echo 'Testing...' 
 					sh 'cd /usr/src/app && npm test'
 				}                 
 			}
@@ -47,7 +46,11 @@ pipeline {
 			}                 
 			stage('Deploy') {                         
 				steps {                                 
-					echo 'Deploying....'                                     					
+					echo 'Deploying....'
+					sh 'docker run -d -p 6060:8000 --name $DOCKER_IMAGE_NAME $DOCKER_USER/$DOCKER_IMAGE_NAME'
+				    //sh 'curl -i 0.0.0.0:6060'
+				    input 'Do you want to delete the app?'
+				    sh 'docker stop $DOCKER_IMAGE_NAME && docker rm $DOCKER_IMAGE_NAME'
 				}                 
 			}         
 		} 
